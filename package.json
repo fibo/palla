@@ -1,0 +1,14 @@
+{
+  "name": "palla",
+  "private": true,
+  "scripts": {
+    "check_types": "tsc --noEmit",
+    "start": "LOCAL=1 bun server.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

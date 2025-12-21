@@ -1,5 +1,0 @@
-globalThis.publish = () => {
-}
-
-globalThis.subscribe = () => {
-}
