@@ -6,4 +6,5 @@ import './webStorage'
 // 3. Import other modules.
 import './socket'
 // 4. Finally, import modules that define custom elements.
+import './elements/game-view'
 import './elements/socket-status'

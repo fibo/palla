@@ -1,18 +1,18 @@
-export class SocketStatus extends HTMLElement {
-  #text = h('span')
+export class HTMLSocketStatusElement extends HTMLElement {
+  text = h('span')
 
   connectedCallback() {
-    this.append(this.#text)
+    this.append(this.text)
 
     subscribe(['CONNECTED', 'DISCONNECTED'], ({ connected }) => {
       if (connected === undefined) return
-      this.#setText(connected)
+      this.setText(connected)
     })
   }
 
-  #setText(connected: boolean) {
-    this.#text.textContent = connected ? '🟢 Connected' : '🔴 Disconnected'
+  setText(connected: boolean) {
+    this.text.textContent = connected ? '🟢 Connected' : '🔴 Disconnected'
   }
 }
 
-customElements.define('socket-status', SocketStatus)
+customElements.define('socket-status', HTMLSocketStatusElement)

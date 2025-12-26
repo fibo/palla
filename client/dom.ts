@@ -1,38 +1,30 @@
-import { SocketStatus } from './elements/socket-status'
-
-// See HTMLElementTagNameMap
-export type TagNameMap = {
-  'span': HTMLSpanElement
+export type TagName =
+  | 'span'
+  | 'svg'
   // Custom elements
-  'socket-status': SocketStatus
-}
+  | 'game-view'
+  | 'socket-status'
 
+export type DomAttributes = Record<string, string>
 export type DomChildren = Array<number | string | HTMLElement>
 
-export function h(
-  tagName: keyof TagNameMap,
-  attributes: Record<string, string> | null = null,
-  children: DomChildren = []
-) {
-
+export function h(tagName: TagName, attributes: DomAttributes = {}, children: DomChildren = []) {
   // Create the element with the given tag name.
   const element = document.createElement(tagName) as HTMLElement
 
   // Set attributes on the element.
-  if (attributes)
-    for (const [key, value] of Object.entries(attributes))
-      element.setAttribute(key, value)
+  for (const [key, value] of Object.entries(attributes))
+    element.setAttribute(key, value)
 
   // Create and append children.
   for (const child of children)
     element.appendChild(
       (typeof child === 'string' || typeof child === 'number')
         ? document.createTextNode(child as string)
-        : child
-    )
+        : child)
 
   // Return the created element.
-  return element as TagNameMap[typeof tagName]
+  return element
 }
 
 globalThis.h = h
