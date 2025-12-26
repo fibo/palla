@@ -1,4 +1,4 @@
-import type { Message } from '../core/messages'
+import type { Message } from '@core/messages'
 
 function getWebSocketUrl () {
   return process.env.WEBSOCKET_URL || window.location.origin.replace(/^http/, 'ws')

@@ -2,6 +2,7 @@
   "name": "palla",
   "private": true,
   "scripts": {
+    "build": "bun scripts/build.ts",
     "check_types": "tsc --noEmit",
     "start": "LOCAL=1 bun server.ts"
   },

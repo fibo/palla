@@ -1,5 +1,5 @@
-import { build, outdir } from './build'
-import type { Message } from './core/messages'
+import type { Message } from '@core/messages'
+import { build, publicDir } from './scripts/build'
 
 type WebSocketData = {
   sessionId: string
@@ -15,7 +15,7 @@ async function serveBuildFiles(req: Request): Promise<Response> {
       return new Response(null, { status: 204 })
     const filePath = url.pathname === '/' ? '/index.html' : url.pathname
     try {
-      const file = await Bun.file(outdir + filePath)
+      const file = await Bun.file(publicDir + filePath)
       return new Response(file)
     } catch (error) {
       console.error(error)

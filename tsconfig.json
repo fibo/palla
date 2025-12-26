@@ -9,6 +9,11 @@
     "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "paths": {
+      "@assets/*": ["./assets/*"],
+      "@client/*": ["./client/*"],
+      "@core/*": ["./core/*"]
+    },
     "strict": true,
     "target": "ESNext",
     "verbatimModuleSyntax": true,

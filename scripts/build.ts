@@ -1,10 +1,12 @@
 import { rm } from 'node:fs/promises'
+import { dirname, join } from 'node:path'
 
-export const outdir = 'public'
+const repoDir = dirname(import.meta.dir)
+export const publicDir = join(repoDir, 'public')
 
 async function clean() {
   try {
-    await rm(outdir, { recursive: true })
+    await rm(publicDir, { recursive: true })
   } catch (error) {
     if ((error as { code: string }).code === 'ENOENT') return
     console.error(error)
@@ -14,7 +16,7 @@ async function clean() {
 export async function build(WEBSOCKET_URL: string) {
   await clean()
   await Bun.build({
-    entrypoints: ['./index.html'],
+    entrypoints: [join(repoDir, 'index.html')],
     define: {
       'process.env.WEBSOCKET_URL': `"${WEBSOCKET_URL}"`,
     },
@@ -28,7 +30,7 @@ export async function build(WEBSOCKET_URL: string) {
       chunk: 'assets/[hash].[ext]',
       asset: 'assets/[name].[ext]'
     },
-    outdir,
+    outdir: publicDir
   })
 }
 
