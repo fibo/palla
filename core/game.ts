@@ -1,9 +1,9 @@
 export function loop(
-    /** Returns true if loop should stop */
-    callback: () => boolean | void,
-    /** Frames per second */
-    FPS: number
-  ) {
+  /** Returns true if loop should stop */
+  callback: () => boolean | void,
+  /** Frames per second */
+  FPS: number
+) {
   const now = performance.now()
   try {
     const shouldStop = callback()

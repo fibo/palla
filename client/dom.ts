@@ -27,8 +27,8 @@ export function h(
   for (const child of children)
     element.appendChild(
       (typeof child === 'string' || typeof child === 'number')
-      ? document.createTextNode(child as string)
-      : child
+        ? document.createTextNode(child as string)
+        : child
     )
 
   // Return the created element.

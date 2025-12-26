@@ -31,7 +31,7 @@ function notify(type: Action['type']) {
 export type SubscriptionKey = Action['type'] | Array<Action['type']>
 
 function subscribe(key: SubscriptionKey, callback: Callback) {
-  const actionTypes = Array.isArray(key) ? key : [key];
+  const actionTypes = Array.isArray(key) ? key : [key]
   for (const type of actionTypes) {
     const callbacks = subscribers.get(type)
     if (callbacks)

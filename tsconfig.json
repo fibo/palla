@@ -4,7 +4,7 @@
     "allowJs": true,
     "checkJs": true,
     "lib": ["DOM", "ESNext"],
-    "module": "ESNext",
+    "module": "Preserve",
     "moduleResolution": "bundler",
     "noEmit": true,
     "noUnusedLocals": true,
@@ -19,5 +19,5 @@
     "verbatimModuleSyntax": true,
   },
   "exclude": ["node_modules", "public"],
-  "include": ["**/*.ts" ]
+  "include": ["**/*.ts", "eslint.config.js"]
 }

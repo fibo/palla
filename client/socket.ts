@@ -1,10 +1,10 @@
 import type { Message } from '@core/messages'
 
-function getWebSocketUrl () {
+function getWebSocketUrl() {
   return process.env.WEBSOCKET_URL || window.location.origin.replace(/^http/, 'ws')
 }
 
-function connectWebSocket () {
+function connectWebSocket() {
   const url = getWebSocketUrl()
   const socket = new WebSocket(url)
 
