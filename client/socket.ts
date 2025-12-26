@@ -1,3 +1,5 @@
+import type { Message } from '../core/messages'
+
 function getWebSocketUrl () {
   return process.env.WEBSOCKET_URL || window.location.origin.replace(/^http/, 'ws')
 }
@@ -15,7 +17,9 @@ function connectWebSocket () {
   })
 
   socket.addEventListener('message', (event) => {
-    console.log('Message from server:', event.data)
+    const message = JSON.parse(event.data) as Message
+    if (message.type === 'SET_SESSION_ID')
+      publish(message)
   })
 }
 

@@ -1,4 +1,5 @@
-import { build, outdir } from './build.ts'
+import { build, outdir } from './build'
+import type { Message } from './core/messages'
 
 type WebSocketData = {
   sessionId: string
@@ -39,12 +40,11 @@ const server = Bun.serve({
   websocket: {
     data: {} as WebSocketData,
     open(ws) {
-      ws.send(JSON.stringify({
-        type: 'INIT',
-        data: {
-          sessionId: ws.data.sessionId,
-        }
-      }))
+      const message: Message = {
+        type: 'SET_SESSION_ID',
+        sessionId: ws.data.sessionId,
+      }
+      ws.send(JSON.stringify(message))
     },
     message(ws, message) {
       ws.send(message); // echo back the message

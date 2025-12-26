@@ -1,6 +1,13 @@
-import type { Action, Callback } from './state';
+import type { DomChildren, TagNameMap } from './dom';
+import type { Action, Callback, SubscriptionKey } from './state';
 
 declare global {
-    function publish(action: Action): void;
-    function subscribe(types: Array<Action['type']>, callback: Callback): () => void;
+  function h(
+    tagName: keyof TagNameMap,
+    attributes?: Record<string, string> | null,
+    children?: DomChildren
+  ): TagNameMap[typeof tagName];
+
+  function publish(action: Action): void;
+  function subscribe(key: SubscriptionKey, callback: Callback): () => void;
 }

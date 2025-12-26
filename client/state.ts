@@ -1,13 +1,13 @@
 export type Action =
   | { type: 'CONNECTED' }
   | { type: 'DISCONNECTED' }
-  | { type: 'SOCKET_ID'; data: { socketId: string } }
+  | { type: 'SET_SESSION_ID'; sessionId: string }
 
 export type Callback = (arg: State) => void
 
 type State = Partial<{
   connected: boolean
-  socketId: string
+  sessionId: string
 }>
 
 const state: State = {
@@ -28,8 +28,11 @@ function notify(type: Action['type']) {
     invoke(callback)
 }
 
-function subscribe(types: Array<Action['type']>, callback: (arg: State) => void) {
-  for (const type of types) {
+export type SubscriptionKey = Action['type'] | Array<Action['type']>
+
+function subscribe(key: SubscriptionKey, callback: Callback) {
+  const actionTypes = Array.isArray(key) ? key : [key];
+  for (const type of actionTypes) {
     const callbacks = subscribers.get(type)
     if (callbacks)
       callbacks.add(callback)
@@ -38,7 +41,7 @@ function subscribe(types: Array<Action['type']>, callback: (arg: State) => void)
   }
   invoke(callback)
   return function unsubscribe() {
-    for (const type of types)
+    for (const type of actionTypes)
       subscribers.get(type)?.delete(callback)
   }
 }
@@ -52,8 +55,8 @@ function publish(action: Action) {
   if (action.type === 'DISCONNECTED')
     state.connected = false
 
-  if (action.type === 'SOCKET_ID')
-    state.socketId = action.data.socketId
+  if (action.type === 'SET_SESSION_ID')
+    state.sessionId = action.sessionId
 
   notify(action.type)
 }
