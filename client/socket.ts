@@ -24,6 +24,9 @@ function connect() {
   socket.addEventListener('message', (event) => {
     const message = JSON.parse(event.data) as ServerMessage
 
+    if (message.type === 'UPDATE_BALL')
+      publish(message)
+
     if (message.type === 'SET_SESSION_ID')
       publish(message)
 

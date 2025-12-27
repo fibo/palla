@@ -1,4 +1,5 @@
 import type { System } from './game'
+import type { Vector } from './math'
 
 export type ClientMessage =
   |
@@ -7,6 +8,12 @@ export type ClientMessage =
   }
 
 export type ServerMessage =
+  |
+  {
+    type: 'UPDATE_BALL'
+    position: Vector
+    velocity: Vector
+  }
   |
   {
     type: 'SET_SYSTEM_SNAPSHOT'

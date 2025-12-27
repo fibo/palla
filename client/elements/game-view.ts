@@ -13,10 +13,13 @@ export class HTMLGameViewElement extends HTMLElement {
     this.append(this.svg)
     subscribe('SET_SYSTEM_SNAPSHOT', ({ system }) => {
       if (!system) return
-      ball.setAttribute('cx', `${system.ball.position.x}`)
-      ball.setAttribute('cy', `${system.ball.position.y}`)
-      ball.setAttribute('r', `${system.ball.radius}`)
       this.setDimensions(system.playground.width, system.playground.height)
+      ball.setAttribute('r', `${system.ball.radius}`)
+      this.moveBall(system.ball.position.x, system.ball.position.y)
+    })
+    subscribe('MOVE_BALL', ({ system }) => {
+      if (!system) return
+      this.moveBall(system.ball.position.x, system.ball.position.y)
     })
   }
 

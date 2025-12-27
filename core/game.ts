@@ -1,6 +1,10 @@
+import type { Vector } from './math'
+
+/** Returns true if loop should stop */
+export type LoopCallback = () => boolean | void
+
 export function loop(
-  /** Returns true if loop should stop */
-  callback: () => boolean | void,
+  callback: LoopCallback,
   /** Frames per second */
   FPS: number
 ) {
@@ -20,13 +24,15 @@ export function loop(
 export type System = {
   ball: {
     radius: number
-    position: { x: number; y: number }
+    position: Vector
+    /** Pixels per second. */
     velocity: { x: number; y: number }
   }
   playground: {
     width: number
     height: number
   }
+  FPS: number
 }
 
 export type Room = {

@@ -1,5 +1,8 @@
 import type { Room } from '@core/game'
+import { loop } from '@core/game'
+import type { Vector } from '@core/math'
 import type { ClientMessage, ServerMessage } from '@core/messages'
+import { nextSystemState } from '@core/physics'
 
 import { build, publicDir } from './scripts/build'
 
@@ -31,15 +34,41 @@ const room: Room = {
   system: {
     ball: {
       radius: 10,
-      position: { x: 50, y: 50 },
-      velocity: { x: 1, y: 1 },
+      position: { x: 10, y: 10 },
+      velocity: { x: 50, y: 50 },
     },
     playground: {
       width: 600,
       height: 400,
     },
+    FPS: 30
   }
 }
+
+const observers = new Map<string, (ball: {
+  position: Vector
+  velocity: Vector
+}) => void>()
+
+// Evolve system and update with collisions.
+loop(() => {
+  const gotCollision = nextSystemState(room.system, room.system.FPS)
+  if (!gotCollision) return
+  for (const [, send] of observers)
+    send({
+      position: room.system.ball.position,
+      velocity: room.system.ball.velocity,
+    })
+}, room.system.FPS)
+
+// Send updates to keep observers in sync.
+loop(() => {
+  for (const [, send] of observers)
+    send({
+      position: room.system.ball.position,
+      velocity: room.system.ball.velocity,
+    })
+}, 2)
 
 const server = Bun.serve({
   port: 4774, // P(4774) // PALLA
@@ -57,15 +86,27 @@ const server = Bun.serve({
   },
   websocket: {
     data: {} as WebSocketData,
+
+    close(ws) {
+      const sessionId = ws.data.sessionId
+      observers.delete(sessionId)
+    },
+
     open(ws) {
-      const message: ServerMessage = {
-        type: 'SET_SESSION_ID',
-        sessionId: ws.data.sessionId,
-      }
+      const sessionId = ws.data.sessionId
+
+      observers.set(sessionId, (ball) => {
+        const message: ServerMessage = { type: 'UPDATE_BALL', ...ball }
+        ws.send(JSON.stringify(message))
+      })
+
+      const message: ServerMessage = { type: 'SET_SESSION_ID', sessionId }
       ws.send(JSON.stringify(message))
     },
+
     message(ws, json) {
       const message: ClientMessage = JSON.parse(json as string)
+
       if (message.type === 'GET_SYSTEM_SNAPSHOT') {
         const response: ServerMessage = {
           type: 'SET_SYSTEM_SNAPSHOT',
@@ -74,6 +115,7 @@ const server = Bun.serve({
         ws.send(JSON.stringify(response))
       }
     },
+
     drain(ws) {
       console.warn('backpressure' + ws.getBufferedAmount())
     }
