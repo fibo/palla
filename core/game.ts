@@ -28,3 +28,9 @@ export type System = {
     height: number
   }
 }
+
+export type Room = {
+  id: string
+  players: Set<string>
+  system: System
+}

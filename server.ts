@@ -1,4 +1,6 @@
-import type { Message } from '@core/messages'
+import type { Room } from '@core/game'
+import type { ClientMessage, ServerMessage } from '@core/messages'
+
 import { build, publicDir } from './scripts/build'
 
 type WebSocketData = {
@@ -23,6 +25,22 @@ async function serveBuildFiles(req: Request): Promise<Response> {
   }
 }
 
+const room: Room = {
+  id: 'room-1',
+  players: new Set<string>(),
+  system: {
+    ball: {
+      radius: 10,
+      position: { x: 50, y: 50 },
+      velocity: { x: 1, y: 1 },
+    },
+    playground: {
+      width: 600,
+      height: 400,
+    },
+  }
+}
+
 const server = Bun.serve({
   port: 4774, // P(4774) // PALLA
   async fetch(req) {
@@ -40,14 +58,21 @@ const server = Bun.serve({
   websocket: {
     data: {} as WebSocketData,
     open(ws) {
-      const message: Message = {
+      const message: ServerMessage = {
         type: 'SET_SESSION_ID',
         sessionId: ws.data.sessionId,
       }
       ws.send(JSON.stringify(message))
     },
-    message(ws, message) {
-      ws.send(message) // echo back the message
+    message(ws, json) {
+      const message: ClientMessage = JSON.parse(json as string)
+      if (message.type === 'GET_SYSTEM_SNAPSHOT') {
+        const response: ServerMessage = {
+          type: 'SET_SYSTEM_SNAPSHOT',
+          system: room.system,
+        }
+        ws.send(JSON.stringify(response))
+      }
     },
     drain(ws) {
       console.warn('backpressure' + ws.getBufferedAmount())

@@ -1,17 +1,20 @@
+import type { System } from '@core/game'
+
 export type Action =
   | { type: 'CONNECTED' }
   | { type: 'DISCONNECTED' }
   | { type: 'SET_SESSION_ID'; sessionId: string }
+  | { type: 'SET_SYSTEM_SNAPSHOT'; system: System }
 
 export type Callback = (arg: State) => void
 
 type State = Partial<{
   connected: boolean
   sessionId: string
+  system: System
 }>
 
-const state: State = {
-}
+const state: State = {}
 
 const subscribers = new Map<Action['type'], Set<Callback>>()
 
@@ -57,6 +60,9 @@ function publish(action: Action) {
 
   if (action.type === 'SET_SESSION_ID')
     state.sessionId = action.sessionId
+
+  if (action.type === 'SET_SYSTEM_SNAPSHOT')
+    state.system = action.system
 
   notify(action.type)
 }
