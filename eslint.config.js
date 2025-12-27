@@ -1,8 +1,15 @@
+import stylistic from '@stylistic/eslint-plugin'
 import typeScriptParser from '@typescript-eslint/parser'
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort'
-import stylistic from '@stylistic/eslint-plugin'
 
 const rules = {
+  importExport: {
+    'simple-import-sort/exports': 'error',
+    'simple-import-sort/imports': 'error'
+  },
+  quality: {
+    'no-console': ['error', { allow: ['error', 'info', 'warn'] }],
+  },
   stylistic: {
     '@stylistic/array-bracket-spacing': ['error', 'never'],
     '@stylistic/arrow-spacing': ['error', { after: true, before: true }],
@@ -36,6 +43,7 @@ const rules = {
     '@stylistic/space-infix-ops': 'error',
     '@stylistic/type-annotation-spacing': 'error',
     '@stylistic/type-generic-spacing': 'error',
+    'no-multi-spaces': 'error',
   },
 }
 
@@ -55,7 +63,7 @@ export default [
     ]
   },
 
-  // All JavaScript files.
+  // ESLint configuration.
   {
     files: ['eslint.config.js'],
     plugins: {
@@ -63,6 +71,8 @@ export default [
       ...plugins.stylistic
     },
     rules: {
+      'sort-keys': 'error',
+      ...rules.importExport,
       ...rules.stylistic
     }
   },
@@ -76,6 +86,8 @@ export default [
       ...plugins.stylistic
     },
     rules: {
+      ...rules.importExport,
+      ...rules.quality,
       ...rules.stylistic,
     },
   }
